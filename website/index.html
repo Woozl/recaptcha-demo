@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizza Shop</title>
+  <script src="./script.js"></script>
+</head>
+<body>
+  <h1>Pizza Shop</h1>
+  <h2>Survey</h2>
+  <form action="/survey" method="post">
+    <div>
+      <label for="name">Please enter your name:</label>
+      <br />
+      <input id="name" type="text" name="name" required />
+    </div>
+
+    <br>
+
+    <div>
+      <label for="email">Please enter your email:</label>
+      <br />
+      <input id="email" type="email" name="email" required />
+    </div>
+
+    <br>
+
+    <fieldset>
+      <legend>Please rate your experience:</legend>
+      <div>
+        <input id="1-star" type="radio" name="rating" value="1" required>
+        <label for="1-star">★</label>  
+      </div>
+      <div>
+        <input id="2-star" type="radio" name="rating" value="1" required>
+        <label for="2-star">★★</label> 
+      </div>
+      <div>
+        <input id="3-star" type="radio" name="rating" value="1" required>
+        <label for="3-star">★★★</label> 
+      </div>
+      <div>
+        <input id="4-star" type="radio" name="rating" value="1" required>
+        <label for="4-star">★★★★</label> 
+      </div>
+      <div>
+        <input id="5-star" type="radio" name="rating" value="1" required>
+        <label for="5-star">★★★★★</label> 
+      </div>
+    </fieldset>
+    
+    <br>
+    
+    <div>
+      <label for="notes">Additional Notes:</label>
+      <br>
+      <textarea id="notes" name="notes" rows="8" cols="40"></textarea>
+    </div>
+
+    <br>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
