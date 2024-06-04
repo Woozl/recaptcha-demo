@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pizza Shop</title>
-  <script src="./script.js"></script>
+  <script src="./script.js" defer></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LfwL_ApAAAAAFL1wGxWFzQy0HSbgqpZtBV7yldg"></script>
 </head>
 <body>
   <h1>Pizza Shop</h1>
   <h2>Survey</h2>
-  <form action="/survey" method="post">
+  <form id="survey-form">
     <div>
       <label for="name">Please enter your name:</label>
       <br />
@@ -33,19 +34,19 @@
         <label for="1-star">★</label>  
       </div>
       <div>
-        <input id="2-star" type="radio" name="rating" value="1" required>
+        <input id="2-star" type="radio" name="rating" value="2" required>
         <label for="2-star">★★</label> 
       </div>
       <div>
-        <input id="3-star" type="radio" name="rating" value="1" required>
+        <input id="3-star" type="radio" name="rating" value="3" required>
         <label for="3-star">★★★</label> 
       </div>
       <div>
-        <input id="4-star" type="radio" name="rating" value="1" required>
+        <input id="4-star" type="radio" name="rating" value="4" required>
         <label for="4-star">★★★★</label> 
       </div>
       <div>
-        <input id="5-star" type="radio" name="rating" value="1" required>
+        <input id="5-star" type="radio" name="rating" value="5" required>
         <label for="5-star">★★★★★</label> 
       </div>
     </fieldset>
@@ -53,14 +54,14 @@
     <br>
     
     <div>
-      <label for="notes">Additional Notes:</label>
+      <label for="notes">Additional Feedback:</label>
       <br>
       <textarea id="notes" name="notes" rows="8" cols="40"></textarea>
     </div>
 
     <br>
 
-    <button type="submit">Submit</button>
+    <button id="submit-button" type="submit">Submit</button>
   </form>
 </body>
 </html>

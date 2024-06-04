@@ -1,3 +1,4 @@
+import "dotenv/config";
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import fastifyFormbody from "@fastify/formbody";
@@ -5,36 +6,68 @@ import path from "path";
 
 const fastify = Fastify();
 
-// ====== ROUTES ======
+fastify.post('/survey', async (req, reply) => {
+  const { name, email, rating, notes, token } = req.body;
 
-// This is our survey response handler
-fastify.post('/survey', async (req) => {
-  console.log("Received a survey response: ");
+  // TODO: Validate expected request body
 
-  // Validate expected response
-  const { name, email, rating, notes } = req.body;
-  if (!name)
-    return { error: "Missing name" };
-  if (!email || !email.includes("@"))
-    return { error: "Missing or invalid email"};
-  if (!rating)
-    return { error: "Missing rating" };
-  const parsedRating = parseInt(rating);
-  if (parsedRating < 1 || parsedRating > 5)
-    return { error: "Rating must be between 1 and 5" };
-  
+  const { score } = verifyRecaptcha({ token, action: "survey" });
+
+  // Determine what to do based on the score for your use-case.
+  // For this demo, log the score and send an error message response.
+  if (score < 0.5) {
+    console.log(`Request failed reCAPTCHA. Score: ${score}`)
+    reply.code(422) // Unprocessable entity
+    return { success: false, message: "Failed CAPTCHA" };
+  }
+
+  // If the score passes, determine what to do with the survey
+  // results. This could be writing them to a database or 
+  // something else. For this demo, we're going to log the survey
+  // responses to the console and return a coupon code.
   console.log(`\
     Name:\t${name}
     Email:\t${email}
-    Rating:\t${parsedRating} star${parsedRating > 1 ? "s" : ""}
-    Notes:\t${notes}\
+    Rating:\t${rating}
+    Notes:\t${notes}
   `);
-
-  // upon successful verification of completed survey, send a coupon code
-  return {
-    coupon: generateCoupon()
-  }
+  return { success: true, coupon: generateCoupon() };
 });
+
+const verifyRecaptcha = async ({ token, action }) => {
+  const res = await fetch(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: process.env.RECAPTCHA_PRIV_KEY,
+        response: token,
+      }).toString(),
+    }
+  );
+  
+  // Check for HTTP error codes
+  if (!res.ok) throw new Error(res.statusText);
+  const data = await res.json();
+
+  // Check for reCAPTCHA error codes
+  if (!data.success)
+    throw new Error(`ReCAPTCHA Errors: ${data["error-codes"].join(", ")}`);
+
+  // Make sure expected action matches action used to generate token
+  if (data.action !== action) {
+    const msg = 
+      `Client action ("${data.action}") did not match expected action of "${action}"`;
+    throw new Error(msg)
+  }
+
+  // if all checks were successful, return the whole reCAPTCHA 
+  // verification object, which includes the `score`.
+  return data;
+}
+
+
 
 
 
@@ -56,6 +89,8 @@ fastify.listen({ port: 3000 }, (err) => {
 
 
 
+
+
 // ======== UTILS =======
 const generateCoupon = (length = 10) => {
   const bag = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -70,3 +105,5 @@ const randRange = (min, max) => {
   max = Math.floor(max);
   return Math.floor((Math.random() * (max - min + 1))) + min
 }
+
+const sleep = (ms) => new Promise((res) => { setTimeout(res, ms); })
