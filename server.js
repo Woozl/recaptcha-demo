@@ -11,7 +11,7 @@ fastify.post('/survey', async (req, reply) => {
 
   // TODO: Validate expected request body
 
-  const { score } = verifyRecaptcha({ token, action: "survey" });
+  const { score } = await verifyRecaptcha({ token, action: "survey" });
 
   // Determine what to do based on the score for your use-case.
   // For this demo, log the score and send an error message response.
@@ -26,6 +26,7 @@ fastify.post('/survey', async (req, reply) => {
   // something else. For this demo, we're going to log the survey
   // responses to the console and return a coupon code.
   console.log(`\
+    Score:\t${score}
     Name:\t${name}
     Email:\t${email}
     Rating:\t${rating}
